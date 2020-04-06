@@ -1,0 +1,32 @@
+{
+  "name": "api-server",
+  "version": "0.1.0",
+  "description": "JSTech 2020 Backend Analytics Server",
+  "main": "src/main.ts",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@types/node": "^12.12.28",
+    "tslint": "^5.20.0",
+    "tsoa": "^2.5.13",
+    "typescript": "^3.8.2"
+  },
+  "scripts": {
+    "build:routes": "mkdir -p src/routes && tsoa routes",
+    "build:swagger": "mkdir -p api && mkdir -p api/dist && tsoa swagger",
+    "build:ts": "tsc -p src",
+    "build:all": "npm run build:routes && npm run build:swagger && npm run build:ts",
+    "server": "node dist/main.js",
+    "docker:build": "docker build -t backend .",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:JSTech2020/group_a.git"
+  },
+  "keywords": [
+    "expressjs",
+    "typescript"
+  ]
+}
