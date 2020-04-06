@@ -4,13 +4,14 @@
   "description": "JSTech 2020 Backend Analytics Server",
   "main": "src/main.ts",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "@types/node": "^12.12.28",
     "tslint": "^5.20.0",
     "tsoa": "^2.5.13",
-    "typescript": "^3.8.2"
+    "typescript": "^3.8.3"
   },
   "scripts": {
     "build:routes": "mkdir -p src/routes && tsoa routes",
