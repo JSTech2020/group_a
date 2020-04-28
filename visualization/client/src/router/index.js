@@ -4,6 +4,8 @@ import Stories from "../components/Stories";
 import Similarity from "../components/Similarity";
 import TopicModel from "../components/TopicModel";
 
+// import Temp from "../assets/lda.html"
+
 Vue.use(Router)
 
 const routes = [
@@ -21,7 +23,13 @@ const routes = [
     path: '/similarity',
     name: 'Similarity',
     component: Similarity,
-  }
+  },
+  // {
+  //   path: '/temp',
+  //   name: 'Temp',
+  //   component: {template: Temp},
+  // }
+
 ]
 
 const router = new Router({

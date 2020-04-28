@@ -1,29 +1,43 @@
 <template>
     <div class="container">
-<!--        {{status}}-->
-<!--        <iframe v-bind:src="url" height="500" width="500"></iframe>-->
+
+        <div class="embed-responsive embed-responsive-16by9 z-depth-1-half">
+        <iframe class="embed-responsive-item" src="http://localhost:5000/topic_model" sandbox="allow-scripts"  allowfullscreen></iframe>
+    </div>
+
+<!--        <div v-html="compiledHtml.outerHTML">-->
+<!--        </div>-->
     </div>
 </template>
 
 <script>
     import axios from "axios";
+
     export default {
         name: "TopicModel",
         data() {
             return {
                 status: "",
-                // url: require('./../assets/lda.html')
+                input: "test",
             };
         },
         async created() {
-            await this.runTopicModel();
+            // await this.runTopicModel();
+            // await this.loadFile();
+        },
+        computed: {
+            compiledHtml: function() {
+                return this.input;
+            }
         },
         methods: {
             runTopicModel() {
-                const path = 'http://localhost:5000/stories';
+                const path = 'http://localhost:5000/topic_model';
                 return axios.get(path)
                     .then((res) => {
-                        this.status = res.data.status;
+                        let parser = new DOMParser();
+                        this.input = parser.parseFromString(res.data, "text/html");
+
                     })
                     .catch((error) => {
                         // eslint-disable-next-line
@@ -32,6 +46,7 @@
 
             },
         },
+
     }
 </script>
 
