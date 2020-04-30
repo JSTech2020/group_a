@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container-fluid">
 
         <div class="embed-responsive embed-responsive-16by9 z-depth-1-half">
         <iframe class="embed-responsive-item" src="http://localhost:5000/topic_model" sandbox="allow-scripts"  allowfullscreen></iframe>

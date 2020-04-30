@@ -14,7 +14,10 @@
     "core-js": "^3.6.4",
     "d3": "^5.16.0",
     "html-loader": "^1.1.0",
+    "save-svg-as-png": "^1.4.17",
     "vue": "^2.6.11",
+    "vue-json-csv": "^1.2.11",
+    "vue-plotly": "^1.1.0",
     "vue-router": "^3.1.6"
   },
   "devDependencies": {
