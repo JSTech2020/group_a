@@ -19,13 +19,6 @@ db = client[DATABASE]
 @app.route('/preprocess', methods=['GET'])
 def preprocess():
     df = pd.DataFrame(list(db[STORIES_DB].find({}, {"_id":0, "id": 1, "plain_text": 1})))
-    # check if push collection(autotags) already exists, if so, remove(drop) the collection for now
-    # TODO: handle exception
-    if AUTOTAGS_DB in db.list_collection_names():
-        collection = db[AUTOTAGS_DB]
-        if collection.estimated_document_count() != 0:
-#             print('Dropping the old collection (' + AUTOTAGS_DB + ') ...')
-            collection.drop()
     collection = db[AUTOTAGS_DB]
 
     for x in df.iterrows():
@@ -40,8 +33,10 @@ def preprocess():
         # word tokenization and other preprocessing for each document
         token_list, lemma_list, pos_list, entity_list, noun_list, wo_verbs_and_names = tokenizeText(content)
 
-        # insert into db
-        collection.insert_one(
+        # insert if data is not present, else update
+        collection.update_one(
+            {"story_id": int(story_id)},
+            {"$set":
                 {
                     "story_id": story_id,
                     "tokens": token_list,
@@ -52,7 +47,9 @@ def preprocess():
                     "lemma_list_wo_verbs_and_names": wo_verbs_and_names,
                     "preprocessed_text": content,
                 }
-            )
+            },
+            upsert=True
+        )
 
     return jsonify({
             'status': 'success',

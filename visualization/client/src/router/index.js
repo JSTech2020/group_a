@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import Stories from "../components/Stories";
 import Similarity from "../components/Similarity";
 import TopicModel from "../components/TopicModel";
+import WordCloud from "../components/WordCloud";
 
 // import Temp from "../assets/lda.html"
 
@@ -23,6 +24,11 @@ const routes = [
     path: '/similarity',
     name: 'Similarity',
     component: Similarity,
+  },
+  {
+    path: '/wordcloud',
+    name: 'WordCloud',
+    component: WordCloud,
   },
   // {
   //   path: '/temp',

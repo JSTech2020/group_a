@@ -12,6 +12,7 @@
                     <b-nav-item @click="preProcessData()">Preprocess</b-nav-item>
                     <b-nav-item @click="generateTags()">Generate Tags</b-nav-item>
                     <b-nav-item href="/topics">Topics</b-nav-item>
+                    <b-nav-item href="/wordcloud">Word Cloud</b-nav-item>
                     <b-nav-item href="/similarity">Similarity</b-nav-item>
                 </b-navbar-nav>
 
