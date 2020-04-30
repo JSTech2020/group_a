@@ -19,6 +19,8 @@ CORS(app)
 
 
 import controllers.story
+import controllers.preprocess
+import controllers.tag
 import controllers.similarity
 import controllers.topic_model
 

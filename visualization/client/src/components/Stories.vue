@@ -1,32 +1,24 @@
 <template>
     <div class="container">
-
-        <div>
-        <router-link
-                to="/similarity"
-        >
-            Similarity
-        </router-link>
-
-        <br>
-
-        <router-link
-                to="/topics"
-        >
-            Topic Model
-        </router-link>
-
-        </div>
-
-
         <div class="row">
             <div class="col-sm-10">
                 <h1>Stories</h1>
                 <hr>
+                <export-data class="btn bg-primary pointer-event "
+                             v-bind:data="stories"
+                             v-bind:name="getExportName()"
+                             delimiter=";"
+                             type="button"
+                             role="button">
+                    Export
+                </export-data>
+                <hr>
+
                 <table class="table table-hover">
                     <thead>
                     <tr>
                         <th scope="col">S.N.</th>
+                        <th scope="col">Story ID</th>
                         <th scope="col">Title</th>
                         <th></th>
                     </tr>
@@ -34,11 +26,12 @@
                     <tbody>
                     <tr v-for="(story, index) in stories" :key="index">
                         <td>{{index+1}}</td>
+                        <td>{{story.id}}</td>
                         <td>{{story.title}}</td>
                         <td>
                             <div class="btn-group" role="group">
                                 <button type="button"
-                                        class="btn btn-info btn-sm"
+                                        class="btn bg-secondary btn-sm"
                                         v-b-modal.story-modal
                                         @click="getStory(story.id)">
                                     Detail
@@ -57,6 +50,8 @@
                  hide-footer>
             id: {{story.id}}<br/>
             title: {{story.title}}<br/>
+            tags: {{story.tags}}<br>
+            related_story_id: {{story.related_story_id}}<br>
             abstract:<br>
             {{story.abstract}}
         </b-modal>
@@ -65,22 +60,30 @@
 
 <script>
     import axios from "axios";
+    import JsonCSV from 'vue-json-csv'
 
     export default {
         name: "Stories",
+        components: {
+            "export-data": JsonCSV,
+        },
         data() {
             return {
                 stories: [],
-                story:{}
+                similarities: [],
+                story:{},
+                tags: [],
             };
         },
-        created() {
-            this.getStories();
+        async created() {
+            await this.getStories();
+            await this.getSimilarStories();
+            await this.updateStories();
         },
         methods: {
             getStories() {
                 const path = 'http://localhost:5000/stories';
-                axios.get(path)
+                return axios.get(path)
                     .then((res) => {
                         this.stories = res.data.stories;
                     })
@@ -88,24 +91,63 @@
                         // eslint-disable-next-line
                         console.error(error);
                     });
-
             },
             async getStory(id) {
                 const path = 'http://localhost:5000/stories/' + id;
                 await axios.get(path)
                     .then((res) => {
                         this.story = res.data.story[0];
+                        let temp = this.stories.find(x => x.id === this.story.id)
+                        if(temp !== null && temp !== "undefined") {
+                            this.story.related_story_id = temp.related_story_id;
+                            this.story.tags = temp.tags;
+                        }
                     })
                     .catch((error) => {
                         // eslint-disable-next-line
                         console.error(error);
                     });
 
+            },
+            getSimilarStories(){
+                const path = 'http://localhost:5000/similarities';
+                return axios.get(path)
+                    .then((res) => {
+                        this.similarities = res.data.similarities;
+                    })
+                    .catch((error) => {
+                        // eslint-disable-next-line
+                        console.error(error);
+                    });
+            },
+            updateStories(){
+                let temp = [];
+                for(let i=0;i<this.stories.length;i++){
+                    temp.push({
+                            ...this.stories[i],
+                            'related_story_id':this.similarities[i]['related_story_id'],
+                            'tags': this.similarities[i]['tags']
+                        })
+                }
+                this.stories=temp;
+                return temp;
+            },
+            getExportName(){
+                return "Export_"+Date.now()+".csv";
+            },
+        },
+        filters:{
+            listToString(li){
+                if(li !== null && li!=="undefined" && li!==[]) {
+                    return li.toString();
+                }
             }
         }
     }
 </script>
 
 <style scoped>
-
+    .container{
+        margin-top: 20px;
+    }
 </style>
