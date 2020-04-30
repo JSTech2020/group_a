@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Stories from "../components/Stories";
 import Similarity from "../components/Similarity";
-import TopicModel from "../components/TopicModel";
+import TopicModeling from "../components/TopicModeling";
 
 // import Temp from "../assets/lda.html"
 
@@ -17,7 +17,7 @@ const routes = [
   {
     path: '/topics',
     name: 'TopicModel',
-    component: TopicModel,
+    component: TopicModeling,
   },
   {
     path: '/similarity',
