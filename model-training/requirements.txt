@@ -115,4 +115,4 @@ Werkzeug==1.0.0
 widgetsnbextension==3.5.1
 wrapt==1.12.1
 zipp==3.1.0
-
+pyLDAvis==2.1.2
