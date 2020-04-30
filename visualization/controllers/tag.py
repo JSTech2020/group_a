@@ -64,7 +64,7 @@ def generate_wordcloud(id):
             df1 = pd.DataFrame(list(db['corpus'].find({}, {"_id":0, "corpus":1})))
             corpus = list(df1['corpus'][0])
         else:
-            corpus = get_corpus(df1)
+            corpus = get_corpus(df)
             db['corpus'].update_one({"id": 1},
                       {"$set": {"corpus": corpus}},
                       upsert=True)
