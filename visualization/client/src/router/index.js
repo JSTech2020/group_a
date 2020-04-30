@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import UploadData from "../components/UploadData";
 import Stories from "../components/Stories";
 import Similarity from "../components/Similarity";
 import TopicModel from "../components/TopicModel";
@@ -29,6 +30,11 @@ const routes = [
     path: '/wordcloud',
     name: 'WordCloud',
     component: WordCloud,
+  },
+  {
+    path: '/upload',
+    name: 'UploadData',
+    component: UploadData,
   },
   // {
   //   path: '/temp',

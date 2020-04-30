@@ -1,8 +1,9 @@
 <template>
     <div class="container">
+        <h1 class="header">Word Cloud</h1>
         <div id="wordcloud-search"
              class="form-inline justify-content-center">
-            <select class=""
+            <select class="form-control"
                     v-model="selected_id"
                     @change="getWordCloud()">
                 <option v-for="story in stories"
@@ -12,22 +13,12 @@
                 </option>
             </select>
 
-            <a class="btn btn-sm bg-primary2"
+            <a class="btn bg-primary2"
                v-bind:href="imgStr"
                v-bind:download="getFileName()"
                     @click="exportImage()">
                 Export
             </a>
-
-            <!--            <button class="btn btn-sm bg-primary"-->
-            <!--                    @click="updateWordCloud()">-->
-            <!--                Find-->
-            <!--            </button>-->
-            <!--            &nbsp;&nbsp;-->
-            <!--            <button class="btn btn-sm bg-primary2"-->
-            <!--                    @click="exportPNG()">-->
-            <!--                Export-->
-            <!--            </button>-->
         </div>
 
         <div class="container">

@@ -9,6 +9,9 @@ from pymongo import MongoClient
 from sklearn.cluster import KMeans
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
 
 from wordcloud import WordCloud, STOPWORDS
 import re
@@ -30,7 +33,7 @@ db = client[DATABASE]
 
 @app.route('/tags', methods=['GET'])
 def generate_tags():
-    df = pd.DataFrame(list(db[AUTOTAGS_DB].find({}, {"_id":0, "lemmas": 1, "story_id": 1, "tokens": 1, "pos": 1, "nouns":1, "entities":1})))
+    df = pd.DataFrame(list(db[AUTOTAGS_DB].find({}, {"_id":0, "lemmas": 1, "story_id": 1, "tokens": 1, "pos": 1, "nouns":1, "entities":1, "preprocessed_text": 1})))
     corpus = get_corpus(df)
 
     collection=db["corpus"]
@@ -39,10 +42,24 @@ def generate_tags():
                          upsert=True)
 
     result = keyword(corpus, 5)
+
+    #Adding similarities data when generating autotags
+    cos_sim = find_similarity_matrix(df['preprocessed_text'])
+    # list of all story ids in order of retrieval
+    id_list = df['story_id'].values.tolist()
+
     collection=db[SIMILARITIES_DB]
     for i in range(len(df)):
+        row = cos_sim[i]
+        sort_five = np.argsort(-row)[:6]
+        similar_story_ids = []
+        for x in sort_five:
+            # as each story would be completely similar to itself, we need to remove its id from the list
+            if x!=i:
+                similar_story_ids.append(id_list[x])
+        # insert related story_ids and tags into database
         collection.update_one({"story_id": int(df['story_id'][i])},
-                             {"$set": {"tags": result[i]}},
+                             {"$set": {"tags": result[i], "related_story_id" : similar_story_ids }},
                              upsert=True)
 
     return jsonify({
@@ -188,3 +205,11 @@ def frequency_count(lemmas):
         most_freq.append(word_freq[i][0])
         least_freq.append(word_freq[num-1-i][0])
     return most_freq, least_freq
+
+
+# Find similarity matrix
+def find_similarity_matrix(corpus):
+    vectorizer = TfidfVectorizer(min_df=0.0, max_df=1.0, ngram_range=(1, 1))
+    feature_matrix = vectorizer.fit_transform(corpus).astype(float)
+    cos_sim = cosine_similarity(feature_matrix.toarray())
+    return cos_sim

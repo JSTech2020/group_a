@@ -35,11 +35,12 @@ def similarities_all():
 def compute_similarity():
     size = int(request.args.get('size')) if request.args.get('size') != None else 10
     df = pd.DataFrame(list(db[AUTOTAGS_DB].find({}, {"_id":0, "lemma_list_without_verbs":1,"lemmas":1, "preprocessed_text": 1, "story_id": 1})))
+
     stories = df['preprocessed_text'].head(size)
     num_story = len(stories)
     story_ids = ["story_" + str(i) for i in df['story_id']]
     id_list = list(df['story_id'])
-#     story_ids = ["story_" + str(i) for i in range(0, len(df['story_id']))]
+
     story_dict = dict(zip(story_ids, stories))
     ids = list(story_dict.keys())
     pairs = []

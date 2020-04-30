@@ -1,12 +1,12 @@
 <template>
-    <div class="container-fluid">
+    <div class="container">
 
-        <div class="embed-responsive embed-responsive-16by9 z-depth-1-half">
-        <iframe class="embed-responsive-item" src="http://localhost:5000/topic_model" sandbox="allow-scripts"  allowfullscreen></iframe>
-    </div>
-
-<!--        <div v-html="compiledHtml.outerHTML">-->
-<!--        </div>-->
+        <div class="embed-responsive embed-responsive-16by9">
+<!--            we can keep scrolling=no but it hampers responsievness of app -->
+            <iframe class="embed-responsive-item"
+                    src="http://localhost:5000/topic_model"
+                    allowfullscreen></iframe>
+        </div>
     </div>
 </template>
 

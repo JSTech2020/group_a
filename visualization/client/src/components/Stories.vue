@@ -7,7 +7,9 @@
                 <export-data class="btn bg-primary pointer-event "
                              v-bind:data="stories"
                              v-bind:name="getExportName()"
-                             delimiter=";"
+                             v-bind:delimiter="';'"
+                             v-bind:encoding="'utf-8'"
+                             v-bind:labels="['id','title','related_story_id', 'tags']"
                              type="button"
                              role="button">
                     Export

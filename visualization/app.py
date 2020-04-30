@@ -18,6 +18,7 @@ app = Flask(__name__)
 CORS(app)
 
 
+import controllers.db
 import controllers.story
 import controllers.preprocess
 import controllers.tag
