@@ -110,8 +110,6 @@ def get_stories_for_topic_id(num_topics,topic_id):
     df_dominant_topic = sent_topics_df.reset_index()
     df_dominant_topic.columns = ['Document_No', 'Dominant_Topic', 'Topic_Perc_Contrib', 'Keywords','Story_Id','Title','Abstract']
 
-    print(df_dominant_topic[df_dominant_topic['Dominant_Topic'] == topic_id])
-
     return(df_dominant_topic[df_dominant_topic['Dominant_Topic'] == topic_id].to_json(orient='records'))
 
 
