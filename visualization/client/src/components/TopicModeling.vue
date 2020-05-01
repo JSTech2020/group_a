@@ -1,5 +1,5 @@
 <template>
-<div class="container">
+<div class="container w-100" >
   <div class="container alert alert-success">
       <div class="form-group">
         <label for="NumberOfTopics">Number Of Topics</label>
@@ -13,8 +13,14 @@
       <button @click="calltopicModeling()" class="btn btn-primary">Analyze</button>
   </div>
     <div v-if="topics > 0" class="container">
-    <TopicModel v-bind:topics="topics"/>
-    <TopicStories v-bind:topics="topics"/>
+      
+      <TopicModel v-bind:topics="topics"/>
+      
+    </div> 
+    <div v-if="topics > 0" class="container">
+      
+   
+      <TopicStories v-bind:topics="topics"/>
     </div> 
 </div>
 </template>

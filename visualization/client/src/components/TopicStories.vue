@@ -33,7 +33,7 @@ export default {
   },
   data() {
     return {
-      current_topic: 0
+      current_topic: 1
     };
   },
   methods: {
