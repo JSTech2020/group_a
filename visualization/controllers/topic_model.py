@@ -61,8 +61,9 @@ def get_lda_model(num_topics):
 
 def topic_modeling_viz(num_topics=5):
     file_name = f"/lda_{num_topics}_{uuid.uuid1()}.html"
-    if lda_viz_dict.get(file_name):
-        return lda_viz_dict.get(file_name)
+    key = f"lda_{num_topics}"
+    if lda_viz_dict.get(key):
+        return lda_viz_dict.get(key)
     else:
         lda_model_1 = get_lda_model(num_topics)
         #pyLDAvis.enable_notebook()
@@ -70,7 +71,7 @@ def topic_modeling_viz(num_topics=5):
         file_path = f"./templates"
         files = f"{file_path}/{file_name}"
         pyLDAvis.save_html(vis, files)
-        lda_viz_dict[file_name] = file_name
+        lda_viz_dict[key] = file_name
         return file_name
     
 def topic_modeling_topic(num_topics,topic_id):
