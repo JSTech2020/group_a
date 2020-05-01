@@ -5,15 +5,16 @@
         <label for="NumberOfTopics">Number Of Topics</label>
         <input
           class="form-control"
+          type="number"
           id="NumberOfTopics"
-          v-model="topics_input"
+          v-model.number="topics_input"
         />
       </div>
       <button @click="calltopicModeling()" class="btn btn-primary">Analyze</button>
   </div>
     <div v-if="topics > 0" class="container">
-    <TopicModel :topics="topics"/>
-    <TopicStories :topics="topics"/>
+    <TopicModel v-bind:topics="topics"/>
+    <TopicStories v-bind:topics="topics"/>
     </div> 
 </div>
 </template>
@@ -26,8 +27,8 @@ export default {
   name: "TopicModeling",
   data() {
             return {
-                topics_input: "10",
-                topics: "0"
+                topics_input: 10,
+                topics: 0
             };
         },
   // data() {

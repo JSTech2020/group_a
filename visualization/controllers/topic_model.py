@@ -1,6 +1,6 @@
 from __main__ import app
 # from flask import jsonify
-from flask import render_template
+from flask import render_template,jsonify
 # import required libraries
 import sys
 import re
@@ -24,58 +24,57 @@ import uuid
 from flask import request
 import json
 
+uri = 'mongodb://localhost:27017/'
+database = 'zs_database'
+collection_fetch = 'autotags_v2'
+collection_push = 'similarities'
+collection_stories = 'stories'
+lda_model_dict = {}
+lda_viz_dict = {}
+
+# initiate variables
+df = pd.DataFrame()
+db = object
+
+# connect to db. TODO: Handle exception cases
+client = MongoClient(uri)
+db = client[database]
+
+# retrieving required data
+df = pd.DataFrame(list(db[collection_fetch].find({}, {"_id":0, "lemma_list_without_verbs": 1, "story_id": 1})))
+
+final_doc = df["lemma_list_without_verbs"]
+dictionary = corpora.Dictionary(final_doc)
+DT_matrix = [dictionary.doc2bow(doc) for doc in final_doc]
+texts = pd.DataFrame(list(db[collection_stories].find({}, {"_id":0, "title": 1, "id": 1, "abstract": 1})))
+
+
+def get_lda_model(num_topics):
+    if lda_model_dict.get(num_topics): 
+         return lda_model_dict.get(num_topics)
+    else:
+        Lda_object = gensim.models.ldamodel.LdaModel
+        lda_model_1 = Lda_object(DT_matrix, num_topics=num_topics, id2word = dictionary)
+        lda_model_dict[num_topics] = lda_model_1
+        return lda_model_1
+        
+
 def topic_modeling_viz(num_topics=5):
-    uri = 'mongodb://localhost:27017/'
-    database = 'zs_database'
-    collection_fetch = 'autotags_v2'
-    collection_push = 'similarities'
-
-    # initiate variables
-    df = pd.DataFrame()
-    db = object
-
-    # connect to db. TODO: Handle exception cases
-    client = MongoClient(uri)
-    db = client[database]
-
-    # retrieving required data
-    df = pd.DataFrame(list(db[collection_fetch].find({}, {"_id":0, "lemma_list_without_verbs": 1, "story_id": 1})))
-
-    final_doc = df["lemma_list_without_verbs"]
-    dictionary = corpora.Dictionary(final_doc)
-    DT_matrix = [dictionary.doc2bow(doc) for doc in final_doc]
-    Lda_object = gensim.models.ldamodel.LdaModel
-    lda_model_1 = Lda_object(DT_matrix, num_topics=num_topics, id2word = dictionary)
-    #pyLDAvis.enable_notebook()
-    vis = pyLDAvis.gensim.prepare(lda_model_1, DT_matrix, dictionary)
-    file_path = f"./templates"
     file_name = f"/lda_{num_topics}_{uuid.uuid1()}.html"
-    files = f"{file_path}/{file_name}"
-    pyLDAvis.save_html(vis, files)
-    return file_name
+    if lda_viz_dict.get(file_name):
+        return lda_viz_dict.get(file_name)
+    else:
+        lda_model_1 = get_lda_model(num_topics)
+        #pyLDAvis.enable_notebook()
+        vis = pyLDAvis.gensim.prepare(lda_model_1, DT_matrix, dictionary)
+        file_path = f"./templates"
+        files = f"{file_path}/{file_name}"
+        pyLDAvis.save_html(vis, files)
+        lda_viz_dict[file_name] = file_name
+        return file_name
     
 def topic_modeling_topic(num_topics,topic_id):
-    uri = 'mongodb://localhost:27017/'
-    database = 'zs_database'
-    collection_fetch = 'autotags_v2'
-    collection_push = 'similarities'
-
-    # initiate variables
-    df = pd.DataFrame()
-    db = object
-
-    # connect to db. TODO: Handle exception cases
-    client = MongoClient(uri)
-    db = client[database]
-
-    # retrieving required data
-    df = pd.DataFrame(list(db[collection_fetch].find({}, {"_id":0, "lemma_list_without_verbs": 1, "story_id": 1})))
-
-    final_doc = df["lemma_list_without_verbs"]
-    dictionary = corpora.Dictionary(final_doc)
-    DT_matrix = [dictionary.doc2bow(doc) for doc in final_doc]
-    Lda_object = gensim.models.ldamodel.LdaModel
-    lda_model_1 = Lda_object(DT_matrix, num_topics=num_topics, id2word = dictionary)
+    lda_model_1 = get_lda_model(num_topics)
     topics = lda_model_1.show_topic(topic_id)
     topics_list = []
     for i, (dicts, prob) in enumerate(topics):
@@ -90,29 +89,7 @@ def topic_modeling_topic(num_topics,topic_id):
     return topics_list 
 
 def get_stories_for_topic_id(num_topics,topic_id):
-    uri = 'mongodb://localhost:27017/'
-    database = 'zs_database'
-    collection_fetch = 'autotags_v2'
-    collection_push = 'similarities'
-    collection_stories = 'stories'
-
-    # initiate variables
-    df = pd.DataFrame()
-    db = object
-
-    # connect to db. TODO: Handle exception cases
-    client = MongoClient(uri)
-    db = client[database]
-
-    # retrieving required data
-    df = pd.DataFrame(list(db[collection_fetch].find({}, {"_id":0, "lemma_list_without_verbs": 1, "story_id": 1})))
-    texts = pd.DataFrame(list(db[collection_stories].find({}, {"_id":0, "title": 1, "id": 1, "abstract": 1})))
-
-    final_doc = df["lemma_list_without_verbs"]
-    dictionary = corpora.Dictionary(final_doc)
-    DT_matrix = [dictionary.doc2bow(doc) for doc in final_doc]
-    Lda_object = gensim.models.ldamodel.LdaModel
-    ldamodel = Lda_object(DT_matrix, num_topics=num_topics, id2word = dictionary)
+    ldamodel= get_lda_model(num_topics)
     sent_topics_df = pd.DataFrame()
 
     # Get main topic in each document
@@ -152,8 +129,10 @@ def generate_word_clound():
     num_topics = args['num_topics']
     topic_id = args['topic_id']
     topics= topic_modeling_topic(num_topics=int(num_topics),topic_id=int(topic_id))
-        
-    return json.dumps(topics)
+    return jsonify({
+            'topics': topics,
+    })
+    #return json.dumps(topics)
 
 
 
@@ -164,4 +143,6 @@ def generate_topic_stories():
     topic_id = args['topic_id']
     topics= get_stories_for_topic_id(num_topics=int(num_topics),topic_id=int(topic_id))
         
-    return topics
+    return jsonify({
+            'topics': topics,
+    })

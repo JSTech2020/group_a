@@ -1,7 +1,7 @@
 <template>
     <div class="container-fluid" >
         <div class="embed-responsive embed-responsive-16by9 z-depth-1-half"> 
-        <iframe class="embed-responsive-item" src="http://localhost:5000/topic_model" sandbox="allow-scripts"  allowfullscreen></iframe>
+        <iframe class="embed-responsive-item" v-bind:src="src" sandbox="allow-scripts"  allowfullscreen></iframe>
     </div>
 
 <!--        <div v-html="compiledHtml.outerHTML">-->
@@ -15,11 +15,11 @@
     export default {
         name: "TopicModel",
         props: {
-        topics: String,
+        topics: Number,
         },
         data() {
             return {
-                src: "http://localhost:5000/topic_model?num_topics=" + this.topics,
+                src: "http://localhost:5000/topic_model?num_topics=" + this.topics.toString(),
                 input: "test",
             };
         },

@@ -1,56 +1,48 @@
 <template>
   <div class="container">
     <ul class="nav nav-tabs">
-      <li class="nav-item">
-        <a class="nav-link active" href="#">Topic 1</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Topic 2</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Topic 3</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" href="#">Topic 4</a>
+      <li v-for="index in parseInt(topics)" :key="index" class="nav-item">
+        <a
+          class="nav-link"
+          @click.prevent="setActive(index)"
+          :class="{ active: isActive(index) }"
+          :href="index"
+          >Topic {{ index }}</a
+        >
       </li>
     </ul>
+
+    <div class="tab-content py-3" id="myTabContent">
+      <div v-for="index in parseInt(topics)" :key="index" class="tab-pane fade" :class="{ 'active show': isActive(index) }" :id=index>Topic {{ index }}
+        <TopicKeywords v-bind:num_topics="topics" v-bind:topic_id="index"/>
+      </div>
+      
+    </div>
   </div>
 </template>
 
-
-
 <script>
-
-    export default {
-        name: "TopicStories",
-        props: {
-        topics: String,
-        },
-        data() {
-            return {
-            
-            };
-        },
-        methods: {
-            // runTopicModel() {
-            //     const path = 'http://localhost:5000/topic_model';
-            //     return axios.get(path)
-            //         .then((res) => {
-            //             let parser = new DOMParser();
-            //             this.input = parser.parseFromString(res.data, "text/html");
-
-            //         })
-            //         .catch((error) => {
-            //             // eslint-disable-next-line
-            //             console.error(error);
-            //         });
-
-            // },
-        },
-
+import TopicKeywords from "../components/TopicKeywords";
+export default {
+  name: "TopicStories",
+  components: {TopicKeywords},
+  props: {
+    topics: Number
+  },
+  data() {
+    return {
+      current_topic: 0
+    };
+  },
+  methods: {
+    isActive(menuItem) {
+      return this.current_topic === menuItem;
+    },
+    setActive(menuItem) {
+      this.current_topic = menuItem;
     }
+  }
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
