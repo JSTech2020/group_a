@@ -89,6 +89,52 @@ def topic_modeling_topic(num_topics,topic_id):
     
     return topics_list 
 
+def get_stories_for_topic_id(num_topics,topic_id):
+    uri = 'mongodb://localhost:27017/'
+    database = 'zs_database'
+    collection_fetch = 'autotags_v2'
+    collection_push = 'similarities'
+    collection_stories = 'stories'
+
+    # initiate variables
+    df = pd.DataFrame()
+    db = object
+
+    # connect to db. TODO: Handle exception cases
+    client = MongoClient(uri)
+    db = client[database]
+
+    # retrieving required data
+    df = pd.DataFrame(list(db[collection_fetch].find({}, {"_id":0, "lemma_list_without_verbs": 1, "story_id": 1})))
+    texts = pd.DataFrame(list(db[collection_stories].find({}, {"_id":0, "title": 1, "id": 1, "abstract": 1})))
+
+    final_doc = df["lemma_list_without_verbs"]
+    dictionary = corpora.Dictionary(final_doc)
+    DT_matrix = [dictionary.doc2bow(doc) for doc in final_doc]
+    Lda_object = gensim.models.ldamodel.LdaModel
+    ldamodel = Lda_object(DT_matrix, num_topics=num_topics, id2word = dictionary)
+    sent_topics_df = pd.DataFrame()
+
+    # Get main topic in each document
+    for i, row in enumerate(ldamodel[DT_matrix]):
+        row = sorted(row, key=lambda x: (x[1]), reverse=True)
+        # Get the Dominant topic, Perc Contribution and Keywords for each document
+        for j, (topic_num, prop_topic) in enumerate(row):
+            if j == 0:  # => dominant topic
+                wp = ldamodel.show_topic(topic_num)
+                topic_keywords = ", ".join([word for word, prop in wp])
+                sent_topics_df = sent_topics_df.append(pd.Series([int(topic_num), round(prop_topic,4), topic_keywords]), ignore_index=True)
+            else:
+                break
+    sent_topics_df.columns = ['Dominant_Topic', 'Perc_Contribution', 'Topic_Keywords']
+
+    sent_topics_df = pd.concat([sent_topics_df, texts], axis=1)
+    df_dominant_topic = sent_topics_df.reset_index()
+    df_dominant_topic.columns = ['Document_No', 'Dominant_Topic', 'Topic_Perc_Contrib', 'Keywords','Story_Id','Title','Abstract']
+
+    return(df_dominant_topic[df_dominant_topic['Dominant_Topic'] == topic_id].to_json(orient='records'))
+
+
 @app.route('/topic_model', methods=['GET'])
 def generate_html():
     args = request.args
@@ -100,11 +146,22 @@ def generate_html():
 #     })
 
 
-@app.route('/topic_model_viz', methods=['GET'])
-def generate_json():
+@app.route('/topic_model_word_cloud', methods=['GET'])
+def generate_word_clound():
     args = request.args
     num_topics = args['num_topics']
     topic_id = args['topic_id']
     topics= topic_modeling_topic(num_topics=int(num_topics),topic_id=int(topic_id))
         
     return json.dumps(topics)
+
+
+
+@app.route('/topic_model_stories', methods=['GET'])
+def generate_topic_stories():
+    args = request.args
+    num_topics = args['num_topics']
+    topic_id = args['topic_id']
+    topics= get_stories_for_topic_id(num_topics=int(num_topics),topic_id=int(topic_id))
+        
+    return topics
