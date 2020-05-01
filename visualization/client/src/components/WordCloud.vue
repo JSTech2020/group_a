@@ -1,6 +1,7 @@
 <template>
     <div class="container">
         <h1 class="header">Word Cloud</h1>
+        <hr>
         <div id="wordcloud-search"
              class="form-inline justify-content-center">
             <select class="form-control"

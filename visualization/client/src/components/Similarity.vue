@@ -1,6 +1,7 @@
 <template>
     <div class="container">
         <h1 class="header">Story Similarity</h1>
+        <hr>
         <div id="similarity-search"
              class="form-inline justify-content-center">
             <label class="mr-3"
@@ -29,41 +30,42 @@
             </plotly>
         </div>
 
-        <p>The most similar stories are
-            <a type="link"
-               class="btn-link"
-                v-b-modal.story-modal
-                @click="getStory(getId(mostSim[0]))">
+        <h3>The most similar stories are
+            <a class="btn btn-link pointer-event"
+               v-b-modal.story-modal
+               href="#"
+               @click="getStory(getId(mostSim[0]))">
                 {{ getTitle2(mostSim[0]) }}
             </a>
             and
-            <a type="link"
-               class="btn-link"
-                v-b-modal.story-modal
-                @click="getStory(getId(mostSim[1]))">
+            <a class="btn btn-link pointer-event"
+               v-b-modal.story-modal
+               href="#"
+               @click="getStory(getId(mostSim[1]))">
                 {{ getTitle2(mostSim[1])}}
             </a>
             with similarity value
             {{ mostSim[2] }}
-        </p>
-        <p>The least similar stories are
-            <a type="link"
-               class="btn-link"
-                v-b-modal.story-modal
-                @click="getStory(getId(leastSim[0]))">
+        </h3>
+        <h3>The least similar stories are
+            <a class="btn btn-link pointer-event"
+               v-b-modal.story-modal
+               href="#"
+               @click="getStory(getId(leastSim[0]))">
                 {{ getTitle2(leastSim[0])}}
             </a>
             and
-            <a type="link"
-               class="btn-link"
-                v-b-modal.story-modal
-                @click="getStory(getId(leastSim[1]))">
+            <a class="btn btn-link pointer-event"
+               v-b-modal.story-modal
+               href="#"
+               @click="getStory(getId(leastSim[1]))">
                 {{ getTitle2(leastSim[1])}}
             </a>
             with similarity value
-            {{ leastSim[2].title }}
-        </p>
-
+            {{ leastSim[2]}}
+        </h3>
+        <br>
+        <hr>
         <div class="row">
             <div class="col-sm-10">
                 <h1>Stories</h1>
@@ -158,7 +160,7 @@
             return {
                 stories: [],
                 similarities: [],
-                story:{},
+                story: {},
                 tags: [],
                 size: 10,
                 sims: [],
@@ -197,7 +199,7 @@
                     .then((res) => {
                         this.story = res.data.story[0];
                         let temp = this.stories.find(x => x.id === this.story.id)
-                        if(temp !== null && temp !== "undefined") {
+                        if (temp !== null && temp !== "undefined") {
                             this.story.related_story_id = temp.related_story_id;
                             this.story.tags = temp.tags;
                         }
@@ -208,7 +210,7 @@
                     });
 
             },
-            getSimilarStories(){
+            getSimilarStories() {
                 const path = 'http://localhost:5000/similarities';
                 return axios.get(path)
                     .then((res) => {
@@ -219,16 +221,16 @@
                         console.error(error);
                     });
             },
-            updateStories(){
+            updateStories() {
                 let temp = [];
-                for(let i=0;i<this.stories.length;i++){
+                for (let i = 0; i < this.stories.length; i++) {
                     temp.push({
                         ...this.stories[i],
-                        'related_story_id':this.similarities[i]['related_story_id'],
+                        'related_story_id': this.similarities[i]['related_story_id'],
                         'tags': this.similarities[i]['tags']
                     })
                 }
-                this.stories=temp;
+                this.stories = temp;
                 return temp;
             },
             async updateHeatMap() {
@@ -246,8 +248,8 @@
                         this.mostSimilar = JSON.parse(res.data.mostSimilar);
                         this.leastSimilar = JSON.parse(res.data.leastSimilar);
 
-                        for(let i in this.ids){
-                            let id =this.ids[i]
+                        for (let i in this.ids) {
+                            let id = this.ids[i]
                             this.ids_raw.push(parseInt((id.split("_"))[1]))
                         }
 
@@ -344,33 +346,31 @@
                 );
             },
 
-            getTitle(id){
+            getTitle(id) {
                 let temp = this.stories.find(x => x.id === parseInt(id));
                 if (temp !== null && temp !== "undefined") {
                     return temp.title;
-                }else {
+                } else {
                     return ""
                 }
             },
 
-            getTitle2(id){
+            getTitle2(id) {
                 let temp = this.stories.find(x => x.id === parseInt((id.split("_"))[1]));
                 if (temp !== null && temp !== "undefined") {
                     return temp.title;
-                }else {
+                } else {
                     return ""
                 }
             },
 
-            getId(id){
+            getId(id) {
                 if (id !== null && id !== "undefined" && id !== "") {
                     return (id.split("_"))[1];
-                }else {
+                } else {
                     return "";
                 }
             },
-
-
 
 
             async drawHeatMap() {
@@ -438,7 +438,7 @@
             listToString(li) {
                 if (li !== null && li !== undefined && li !== []) {
                     return li.join(", ");
-                }else{
+                } else {
                     return ""
                 }
             }
@@ -448,11 +448,12 @@
 </script>
 
 <style scoped>
-    #similarity-search{
+    #similarity-search {
         margin-top: 10px;
         padding-left: 20px;
     }
-    .btn{
+
+    .btn {
         margin-left: 2px;
         margin-right: 2px;
     }
