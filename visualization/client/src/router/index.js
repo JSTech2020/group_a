@@ -3,7 +3,7 @@ import Router from 'vue-router';
 import UploadData from "../components/UploadData";
 import Stories from "../components/Stories";
 import Similarity from "../components/Similarity";
-import TopicModel from "../components/TopicModel";
+import TopicModeling from "../components/TopicModeling";
 import WordCloud from "../components/WordCloud";
 
 // import Temp from "../assets/lda.html"
@@ -19,7 +19,7 @@ const routes = [
   {
     path: '/topics',
     name: 'TopicModel',
-    component: TopicModel,
+    component: TopicModeling,
   },
   {
     path: '/similarity',

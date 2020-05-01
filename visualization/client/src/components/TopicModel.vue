@@ -1,12 +1,11 @@
 <template>
-    <div class="container">
+    <div class="container-fluid" >
+        <div class="embed-responsive embed-responsive-16by9 z-depth-1-half"> 
+        <iframe class="embed-responsive-item" v-bind:src="src" sandbox="allow-scripts"  allowfullscreen></iframe>
+    </div>
 
-        <div class="embed-responsive embed-responsive-16by9">
-<!--            we can keep scrolling=no but it hampers responsievness of app -->
-            <iframe class="embed-responsive-item"
-                    src="http://localhost:5000/topic_model"
-                    allowfullscreen></iframe>
-        </div>
+<!--        <div v-html="compiledHtml.outerHTML">-->
+<!--        </div>-->
     </div>
 </template>
 
@@ -15,9 +14,12 @@
 
     export default {
         name: "TopicModel",
+        props: {
+        topics: Number,
+        },
         data() {
             return {
-                status: "",
+                src: "http://localhost:5000/topic_model?num_topics=" + this.topics.toString(),
                 input: "test",
             };
         },

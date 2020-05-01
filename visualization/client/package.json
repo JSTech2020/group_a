@@ -19,6 +19,8 @@
     "vue-json-csv": "^1.2.11",
     "vue-plotly": "^1.1.0",
     "vue-router": "^3.1.6",
+    "vue-wordcloud": "^1.1.1",
+    "vuewordcloud": "^18.7.11",
     "vue-sweetalert2": "^3.0.3"
   },
   "devDependencies": {
