@@ -12,7 +12,7 @@ go into the directory @group_a/visualization
     
 5. go into client then install required packages
     > cd client
-    npm install
+    > npm install
     
     Note: Might have to do [ sudo npm install -g @vue/cli@3.7.0 ] if npm install doesn't work immidiately
     
