@@ -16,6 +16,9 @@
 </script>
 
 <style>
+  *{
+    font-size: 14px;
+  }
   #app{
     /*margin-top: 20px;*/
     font-family: "Helvetica Neue",serif;
@@ -27,7 +30,7 @@
     font-size: 18px;
   }
   #app p{
-    font-size: 12px;
+    font-size: 16px;
   }
   #app .bg-primary{
     background: #FDC70F !important;
@@ -61,5 +64,9 @@
   }
   #app .tertiary3 {
     background: #85BBD7 !important;
+  }
+  #app .header {
+    margin-top: 20px;
+    margin-bottom: 10px;
   }
 </style>

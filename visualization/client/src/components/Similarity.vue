@@ -1,18 +1,16 @@
 <template>
     <div class="container">
-        <!--        {{sims}}<br>-->
-
-        <!--        <plotly :data="sims" :layout="layout" :displayModeBar="true"/>-->
+        <h1 class="header">Story Similarity</h1>
         <div id="similarity-search"
-             class="form-inline">
-            <input class=""
+             class="form-inline justify-content-center">
+            <input class="form-control"
                    v-model="size"/>
-            <button class="btn btn-sm bg-primary"
+            <button class="btn bg-primary"
                     @click="updateHeatMap()">
                 Find
             </button>
             &nbsp;&nbsp;
-            <button class="btn btn-sm bg-primary2"
+            <button class="btn bg-primary2"
                     @click="exportPNG()">
                 Export
             </button>
