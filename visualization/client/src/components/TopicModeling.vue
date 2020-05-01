@@ -1,27 +1,35 @@
 <template>
 <div class="container">
   <div class="container alert alert-success">
-    <form>
       <div class="form-group">
         <label for="NumberOfTopics">Number Of Topics</label>
         <input
           class="form-control"
           id="NumberOfTopics"
+          v-model="topics_input"
         />
       </div>
-      <button type="submit" class="btn btn-primary">Analyze</button>
-    </form>
+      <button @click="calltopicModeling()" class="btn btn-primary">Analyze</button>
   </div>
-    <TopicModel/>
+    <div v-if="topics > 0" class="container">
+    <TopicModel :topics="topics"/>
+    <TopicStories :topics="topics"/>
+    </div> 
 </div>
 </template>
 
 <script>
 import TopicModel from "../components/TopicModel";
-//import axios from "axios";
+import TopicStories from "../components/TopicStories";
 export default {
-  components: {TopicModel},
-  name: "TopicModeling"
+  components: {TopicModel,TopicStories},
+  name: "TopicModeling",
+  data() {
+            return {
+                topics_input: "10",
+                topics: "0"
+            };
+        },
   // data() {
   //     return {
   //       // status: "",
@@ -31,19 +39,11 @@ export default {
   // async created() {
   //     await this.runTopicModel();
   // },
-  // methods: {
-  //     runTopicModel() {
-  //         const path = 'http://localhost:5000/stories';
-  //         return axios.get(path)
-  //             .then((res) => {
-  //                 this.status = res.data.status;
-  //             })
-  //             .catch((error) => {
-  //                 // eslint-disable-next-line
-  //                 console.error(error);
-  //             });
+  methods: {
+      calltopicModeling() {
+         this.topics = this.topics_input
 
-  //     },
-  // },
+      },
+  },
 };
 </script>
