@@ -48,14 +48,31 @@
 
         <b-modal ref="showStoryDetail"
                  id="story-modal"
-                 v-bind:title="story.title"
-                 hide-footer>
-            id: {{story.id}}<br/>
-            title: {{story.title}}<br/>
-            tags: {{story.tags}}<br>
-            related_story_id: {{story.related_story_id}}<br>
-            abstract:<br>
-            {{story.abstract}}
+                 size="lg"
+                 hide-footer
+                 v-bind:title="story.title">
+            <div class="responsive">
+                <table class="table table-striped table-condensed">
+                    <tbody>
+                        <tr>
+                            <td scope="row">Story Id:</td>
+                            <td>{{story.id}}</td>
+                        </tr>
+                        <tr>
+                            <td scope="row">Tags:</td>
+                            <td>{{listToString(story.tags)}}</td>
+                        </tr>
+                        <tr>
+                            <td scope="row">Related Story Ids:</td>
+                            <td>{{listToString(story.related_story_id)}}</td>
+                        </tr>
+                        <tr>
+                            <td scope="row">Abstract:</td>
+                            <td>{{story.abstract}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </b-modal>
     </div>
 </template>
@@ -73,7 +90,7 @@
             return {
                 stories: [],
                 similarities: [],
-                story:{},
+                story: {},
                 tags: [],
             };
         },
@@ -100,7 +117,7 @@
                     .then((res) => {
                         this.story = res.data.story[0];
                         let temp = this.stories.find(x => x.id === this.story.id)
-                        if(temp !== null && temp !== "undefined") {
+                        if (temp !== null && temp !== undefined) {
                             this.story.related_story_id = temp.related_story_id;
                             this.story.tags = temp.tags;
                         }
@@ -111,7 +128,7 @@
                     });
 
             },
-            getSimilarStories(){
+            getSimilarStories() {
                 const path = 'http://localhost:5000/similarities';
                 return axios.get(path)
                     .then((res) => {
@@ -122,34 +139,34 @@
                         console.error(error);
                     });
             },
-            updateStories(){
+            updateStories() {
                 let temp = [];
-                for(let i=0;i<this.stories.length;i++){
+                for (let i = 0; i < this.stories.length; i++) {
                     temp.push({
-                            ...this.stories[i],
-                            'related_story_id':this.similarities[i]['related_story_id'],
-                            'tags': this.similarities[i]['tags']
-                        })
+                        ...this.stories[i],
+                        'related_story_id': this.similarities[i]['related_story_id'],
+                        'tags': this.similarities[i]['tags']
+                    })
                 }
-                this.stories=temp;
+                this.stories = temp;
                 return temp;
             },
-            getExportName(){
-                return "Export_"+Date.now()+".csv";
+            getExportName() {
+                return "Export_" + Date.now() + ".csv";
             },
-        },
-        filters:{
-            listToString(li){
-                if(li !== null && li!=="undefined" && li!==[]) {
-                    return li.toString();
+            listToString(li) {
+                if (li !== null && li !== undefined && li !== []) {
+                    return li.join(", ");
+                }else{
+                    return ""
                 }
             }
-        }
+        },
     }
 </script>
 
 <style scoped>
-    .container{
+    .container {
         margin-top: 20px;
     }
 </style>

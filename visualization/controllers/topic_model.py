@@ -26,7 +26,7 @@ import json
 
 uri = 'mongodb://localhost:27017/'
 database = 'zs_database'
-collection_fetch = 'autotags_v2'
+collection_fetch = 'autotags'
 collection_push = 'similarities'
 collection_stories = 'stories'
 lda_model_dict = {}
@@ -41,9 +41,9 @@ client = MongoClient(uri)
 db = client[database]
 
 # retrieving required data
-df = pd.DataFrame(list(db[collection_fetch].find({}, {"_id":0, "lemma_list_without_verbs": 1, "story_id": 1})))
+df = pd.DataFrame(list(db[collection_fetch].find({}, {"_id":0, "lemma_list_wo_verbs_and_names": 1, "story_id": 1})))
 
-final_doc = df["lemma_list_without_verbs"]
+final_doc = df["lemma_list_wo_verbs_and_names"]
 dictionary = corpora.Dictionary(final_doc)
 DT_matrix = [dictionary.doc2bow(doc) for doc in final_doc]
 texts = pd.DataFrame(list(db[collection_stories].find({}, {"_id":0, "title": 1, "id": 1, "abstract": 1})))
@@ -110,6 +110,8 @@ def get_stories_for_topic_id(num_topics,topic_id):
     df_dominant_topic = sent_topics_df.reset_index()
     df_dominant_topic.columns = ['Document_No', 'Dominant_Topic', 'Topic_Perc_Contrib', 'Keywords','Story_Id','Title','Abstract']
 
+    print(df_dominant_topic[df_dominant_topic['Dominant_Topic'] == topic_id])
+
     return(df_dominant_topic[df_dominant_topic['Dominant_Topic'] == topic_id].to_json(orient='records'))
 
 
@@ -125,7 +127,7 @@ def generate_html():
 
 
 @app.route('/topic_model_word_cloud', methods=['GET'])
-def generate_word_clound():
+def generate_word_cloud():
     args = request.args
     num_topics = args['num_topics']
     topic_id = args['topic_id']
