@@ -13,8 +13,9 @@
     </ul>
 
     <div class="tab-content py-3" id="myTabContent">
-      <div v-for="index in parseInt(topics)" :key="index" class="tab-pane fade" :class="{ 'active show': isActive(index) }" :id=index>Topic {{ index }}
+      <div v-for="index in parseInt(topics)" :key="index" class="tab-pane fade" :class="{ 'active show': isActive(index) }" :id=index>
         <TopicKeywords v-bind:num_topics="topics" v-bind:topic_id="index"/>
+        <TopicStory v-bind:num_topics="topics" v-bind:topic_id="index"/>
       </div>
       
     </div>
@@ -23,9 +24,10 @@
 
 <script>
 import TopicKeywords from "../components/TopicKeywords";
+import TopicStory from "../components/TopicStory";
 export default {
   name: "TopicStories",
-  components: {TopicKeywords},
+  components: {TopicKeywords,TopicStory},
   props: {
     topics: Number
   },

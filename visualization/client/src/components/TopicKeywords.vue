@@ -1,19 +1,69 @@
 <template>
-  <div class="container">Topic Keywords {{ topic_id }} {{ num_topics }}</div>
+  
+<wordcloud
+      :data="keywords"
+      nameKey="word"
+      valueKey="prob"
+      color="Accent"
+    >
+      </wordcloud>
+
+
 </template>
 
 <script>
 import axios from "axios";
+import wordcloud from 'vue-wordcloud'
 export default {
   name: "TopicKeywords",
+  components: {
+    wordcloud
+  },
   props: {
     topic_id: Number,
     num_topics: Number
   },
   data() {
     return {
-      current_topic: 0,
-      keywords: []
+      current_topic: 1,
+      keywords: [],
+      defaultWords: [{
+          "name": "Cat",
+          "value": 26
+        },
+        {
+          "name": "fish",
+          "value": 19
+        },
+        {
+          "name": "things",
+          "value": 18
+        },
+        {
+          "name": "look",
+          "value": 16
+        },
+        {
+          "name": "two",
+          "value": 15
+        },
+        {
+          "name": "fun",
+          "value": 9
+        },
+        {
+          "name": "know",
+          "value": 9
+        },
+        {
+          "name": "good",
+          "value": 9
+        },
+        {
+          "name": "play",
+          "value": 6
+        }
+      ]
     };
   },
   created: function() {
@@ -25,8 +75,8 @@ export default {
     axios
       .get(path)
       .then(res => {
-        this.keywords = res.data;
-        console.log(JSON.parse(this.keywords));
+        this.keywords = res.data.topics;
+        console.log(this.keywords[1].word);
       })
       .catch(error => {
         // eslint-disable-next-line
