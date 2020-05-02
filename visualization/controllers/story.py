@@ -41,7 +41,7 @@ def all_stories():
 @app.route('/stories/<id>', methods=['GET'])
 def one_story(id):
     #story = list(db[STORIES_DB].find({"id": int(id)}, {"_id":0, "id":1, "title":1, "abstract":1}))
-    story = list(db[STORIES_DB].find({"id": int(id)}, {"_id":0, "id":1, "title":1, "abstract":1,"content":1, "plain_text": 1}))
+    story = list(db[STORIES_DB].find({"id": int(id)}, {"_id":0, "id":1, "title":1, "abstract":1}))
     story = json.loads(json_util.dumps(story))
     return jsonify({
 	'story': story,
