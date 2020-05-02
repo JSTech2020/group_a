@@ -1,8 +1,14 @@
 <template>
-    <div class="container-fluid" >
-        <div class="embed-responsive embed-responsive-16by9 z-depth-1-half"> 
-        <iframe class="embed-responsive-item" v-bind:src="src" sandbox="allow-scripts"  allowfullscreen></iframe>
-    </div>
+    <div style="
+    max-width: 1600px;
+" >
+       
+        <iframe class="embed-responsive-item" v-bind:src="src" sandbox="allow-scripts" style="
+    width: 115%;
+    height: 880px;
+    margin-left: -71px;
+"  allowfullscreen noborder></iframe>
+    
 
 <!--        <div v-html="compiledHtml.outerHTML">-->
 <!--        </div>-->

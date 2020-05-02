@@ -1,24 +1,30 @@
 <template>
-    <div class="container">
-        <h1 class="header">Topic Model</h1>
-        <hr>
-        <div class="container alert tertiary3">
-            <div class="form-group">
-                <label for="NumberOfTopics">Number Of Topics</label>
-                <input
-                        class="form-control"
-                        type="number"
-                        id="NumberOfTopics"
-                        v-model.number="topics_input"
-                />
-            </div>
-            <button @click="calltopicModeling()" class="btn btn-primary">Analyze</button>
-        </div>
-        <div v-if="topics > 0" class="container">
-            <TopicModel v-bind:topics="topics"/>
-            <TopicStories v-bind:topics="topics"/>
-        </div>
-    </div>
+  <div class="container w-100" >
+    <h1 class="header">Topic Model</h1>
+    <hr>
+    <div class="container alert tertiary3">
+      <div class="form-group">
+        <label for="NumberOfTopics">Number Of Topics</label>
+        <input
+          class="form-control"
+          type="number"
+          id="NumberOfTopics"
+          v-model.number="topics_input"
+        />
+      </div>
+      <button @click="calltopicModeling()" class="btn btn-primary">Analyze</button>
+  </div>
+    <div v-if="topics > 0" class="container">
+      
+      <TopicModel v-bind:topics="topics"/>
+      
+    </div> 
+    <div v-if="topics > 0" class="container">
+      
+   
+      <TopicStories v-bind:topics="topics"/>
+    </div> 
+</div>
 </template>
 
 <script>
