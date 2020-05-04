@@ -37,32 +37,21 @@
       </div>
     </div>
 
-    <b-modal ref="showStoryDetail"
-             id="story-modal"
-             size="lg"
-             hide-footer
-             v-bind:title="story.title">
-      <div class="responsive">
-        <table class="table table-striped table-condensed">
-          <tbody>
-          <tr>
-            <td scope="row">Story Id:</td>
-            <td>{{story.id}}</td>
-          </tr>
-          <tr>
-            <td scope="row">Abstract:</td>
-            <td>{{story.abstract}}</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
+    <b-modal  v-for="(story, index) in stories" :key="index"
+      ref="showStoryDetail"
+      v-bind:id="story.Title"
+      v-bind:title="story.Title"
+      hide-footer
+    >
+      id: {{ story.Story_Id }}<br />
+      title: {{ story.Title }}<br />
+      {{ story.Abstract }}
     </b-modal>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-
 export default {
   name: "TopicStory",
   props: {
