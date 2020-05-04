@@ -1,4 +1,4 @@
-from __main__ import app
+from app import app
 from flask import jsonify
 import base64
 from io import BytesIO
@@ -18,7 +18,7 @@ import re
 from os import path
 import string
 from PIL import Image
-import matplotlib.pyplot as plt
+
 
 
 

@@ -1,4 +1,4 @@
-from __main__ import app
+from app import app
 # from flask import jsonify
 from flask import render_template,jsonify
 # import required libraries
@@ -42,7 +42,8 @@ db = client[database]
 
 # retrieving required data
 df = pd.DataFrame(list(db[collection_fetch].find({}, {"_id":0, "lemma_list_wo_verbs_and_names": 1, "story_id": 1})))
-
+#print(df)
+#gif "lemma_list_wo_verbs_and_names" in df.index:
 final_doc = df["lemma_list_wo_verbs_and_names"]
 dictionary = corpora.Dictionary(final_doc)
 DT_matrix = [dictionary.doc2bow(doc) for doc in final_doc]
@@ -79,8 +80,8 @@ def topic_modeling_topic(num_topics,topic_id):
     topics = lda_model_1.show_topic(topic_id)
     topics_list = []
     for i, (dicts, prob) in enumerate(topics):
-        print(f"{i} {dicts} {prob}")
-        print(type(prob))
+        #print(f"{i} {dicts} {prob}")
+        #print(type(prob))
         topic = {
        "word" : dicts,
        "prob": float(prob)
@@ -118,6 +119,7 @@ def generate_html():
     args = request.args
     num_topics = args['num_topics']
     file_name=topic_modeling_viz(num_topics=num_topics)
+    #print(file_name)
     return render_template(file_name)
 #     return jsonify({
 #         'status': 'success',

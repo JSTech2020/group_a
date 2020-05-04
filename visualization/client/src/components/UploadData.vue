@@ -26,6 +26,7 @@
 
 <script>
     import axios from "axios";
+
     export default {
         name: "UploadData",
         data() {
@@ -34,55 +35,64 @@
             };
         },
         methods: {
-            handleFileUpload(){
+            handleFileUpload() {
                 this.file = this.$refs.file.files[0];
             },
             submitFile() {
                 let self = this;
-                if(this.file==="" || !this.file){
+                if (self.file !== "" && self.file) {
+                    let fileName = this.file.name;
+                    let ext = fileName.split(".")
+                    ext = ext[ext.length - 1]
+
+                    if (this.file.type !== "text/csv" &&
+                        this.file.type !== "application/vnd.ms-excel" &&
+                        ext !== "csv") {
+                        self.$swal({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'File Type Mismatch',
+                            footer: 'Please upload a valid .csv file'
+                        })
+                    } else {
+                        let formData = new FormData();
+                        formData.append('file', this.file);
+                        const path = 'http://localhost:5000/upload_data';
+                        axios.post(path,
+                            formData,
+                            {
+                                headers: {
+                                    'Content-Type': 'multipart/form-data'
+                                }
+                            }
+                        ).then(function (res) {
+                            if (res.data.status === "success") {
+                                self.$swal(
+                                    'Success!',
+                                    'Data uploaded successfully',
+                                    'success'
+                                ).then(() => document.location.href = "/")
+
+                            }
+
+                        })
+                            .catch(function (e) {
+                                console.log(e);
+                            });
+                    }
+
+                } else
                     self.$swal({
                         icon: 'error',
                         title: 'Oops...',
                         text: 'No File Uploaded',
                         footer: 'Please upload a file'
                     })
-                }
-                else if(this.file.type !== "text/csv"){
-                    self.$swal({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'File Type Mismatch',
-                        footer: 'Please upload a valid .csv file'
-                    })
-                }else{
-                    let formData = new FormData();
-                    formData.append('file', this.file);
-                    const path = 'http://localhost:5000/upload_data';
-                    axios.post( path,
-                        formData,
-                        {
-                            headers: {
-                                'Content-Type': 'multipart/form-data'
-                            }
-                        }
-                    ).then(function(res){
-                        if(res.data.status === "success"){
-                            self.$swal(
-                                'Success!',
-                                'Data uploaded successfully',
-                                'success'
-                            ).then(() => document.location.href="/" )
+            },
 
-                        }
 
-                    })
-                        .catch(function(e){
-                            console.log(e);
-                        });
-                }
-
-            }
         }
+
     }
 </script>
 
@@ -97,12 +107,21 @@
         margin: 0;
         width: 100% !important;
     }
-    .files input:focus{     outline: 2px dashed #92b0b3;  outline-offset: -10px;
+
+    .files input:focus {
+        outline: 2px dashed #92b0b3;
+        outline-offset: -10px;
         -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
-        transition: outline-offset .15s ease-in-out, background-color .15s linear; border:1px solid #92b0b3;
+        transition: outline-offset .15s ease-in-out, background-color .15s linear;
+        border: 1px solid #92b0b3;
     }
-    .files{ position:relative}
-    .files:after {  pointer-events: none;
+
+    .files {
+        position: relative
+    }
+
+    .files:after {
+        pointer-events: none;
         position: absolute;
         top: 60px;
         left: 0;
@@ -116,11 +135,16 @@
         background-size: 100%;
         background-repeat: no-repeat;
     }
-    .color input{ background-color:#f1f1f1;}
+
+    .color input {
+        background-color: #f1f1f1;
+    }
+
     .files:before {
         position: absolute;
         bottom: 10px;
-        left: 0;  pointer-events: none;
+        left: 0;
+        pointer-events: none;
         width: 100%;
         right: 0;
         height: 57px;

@@ -33,14 +33,14 @@
         <h3>The most similar stories are
             <a class="btn btn-link pointer-event"
                v-b-modal.story-modal
-               href="#"
+               href=""
                @click="getStory(getId(mostSim[0]))">
                 {{ getTitle2(mostSim[0]) }}
             </a>
             and
             <a class="btn btn-link pointer-event"
                v-b-modal.story-modal
-               href="#"
+               href=""
                @click="getStory(getId(mostSim[1]))">
                 {{ getTitle2(mostSim[1])}}
             </a>
@@ -50,14 +50,14 @@
         <h3>The least similar stories are
             <a class="btn btn-link pointer-event"
                v-b-modal.story-modal
-               href="#"
+               href=""
                @click="getStory(getId(leastSim[0]))">
                 {{ getTitle2(leastSim[0])}}
             </a>
             and
             <a class="btn btn-link pointer-event"
                v-b-modal.story-modal
-               href="#"
+               href=""
                @click="getStory(getId(leastSim[1]))">
                 {{ getTitle2(leastSim[1])}}
             </a>
@@ -83,13 +83,14 @@
                     </thead>
                     <tbody>
                     <tr v-for="(val,index) in ids_raw" :key="index">
-                        <td>{{index+1}}</td>
-                        <td>{{stories[val].id}}</td>
-                        <td>{{stories[val].title}}</td>
+                        <td>{{index}}</td>
+                        <td>{{(stories[index])?stories[index].id:""}}</td>
+                        <td>{{(stories[index])?stories[index].title:""}}</td>
                         <td>
-                            <span v-for="(v,i) in stories[val].related_story_id"
-                                  v-bind:key="i">
+                            <span v-if="stories[index]">
                                 <button type="button"
+                                        v-for="(v,i) in stories[index].related_story_id"
+                                        v-bind:key="i"
                                         v-bind:title="getTitle(v)"
                                         v-b-modal.story-modal
                                         @click="getStory(v)"
@@ -160,7 +161,7 @@
             return {
                 stories: [],
                 similarities: [],
-                story: {},
+                story: {title:''},
                 tags: [],
                 size: 10,
                 sims: [],
@@ -348,7 +349,7 @@
 
             getTitle(id) {
                 let temp = this.stories.find(x => x.id === parseInt(id));
-                if (temp !== null && temp !== "undefined") {
+                if (temp !== null && temp !== undefined) {
                     return temp.title;
                 } else {
                     return ""
@@ -357,7 +358,7 @@
 
             getTitle2(id) {
                 let temp = this.stories.find(x => x.id === parseInt((id.split("_"))[1]));
-                if (temp !== null && temp !== "undefined") {
+                if (temp !== null && temp !== undefined) {
                     return temp.title;
                 } else {
                     return ""

@@ -1,4 +1,4 @@
-from __main__ import app
+from app import app
 from flask import jsonify
 import json
 from bson import json_util, ObjectId

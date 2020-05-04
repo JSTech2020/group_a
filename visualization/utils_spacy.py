@@ -4,7 +4,7 @@ import pandas as pd
 import spacy
 
 
-nlp = spacy.load('de_core_news_md')
+nlp = spacy.load('de_core_news_sm')
 
 def removeUnwantedCharacters(text):
     """

@@ -16,16 +16,16 @@
           <tbody>
             <tr v-for="(story, index) in stories" :key="index">
               <td>{{ story.Document_No }}</td>
-              <td>{{ story.Story_Id }}</td>
+              <td>{{ story.Title }}</td> <!-- title -> id -->
               <td>{{ story.Topic_Perc_Contrib }}</td>
-              <td>{{ story.Title }}</td>
+              <td>{{ story.Abstract }}</td><!-- abstract -> title -->
               <td>
                 <div class="btn-group" role="group">
                   <button
                     type="button"
                     class="btn bg-secondary btn-sm"
-                    v-b-modal="story.Title"
-                    
+                    v-b-modal.story-modal
+                    @click="getStory(story.Title)"
                   >
                     Detail
                   </button>
@@ -50,6 +50,10 @@
             <td>{{story.id}}</td>
           </tr>
           <tr>
+            <td scope="row">Title:</td>
+            <td>{{story.title}}</td>
+          </tr>
+          <tr>
             <td scope="row">Abstract:</td>
             <td>{{story.abstract}}</td>
           </tr>
@@ -71,6 +75,11 @@ export default {
   },
   data() {
     return {
+      story: {
+        id:"",
+        title:"",
+        abstract: "",
+      },
       stories: []
     };
   },
@@ -101,11 +110,6 @@ export default {
         .get(path)
         .then(res => {
           this.story = res.data.story[0];
-          let temp = this.stories.find(x => x.id === this.story.id);
-          if (temp !== null && temp !== "undefined") {
-            this.story.related_story_id = temp.related_story_id;
-            this.story.tags = temp.tags;
-          }
         })
         .catch(error => {
           // eslint-disable-next-line

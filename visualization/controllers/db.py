@@ -1,4 +1,6 @@
-from __main__ import app
+from app import app
+
+
 from flask import jsonify, request
 from bson import json_util, ObjectId
 import json
@@ -51,7 +53,7 @@ def upload_data():
         temp_path = tempfile.NamedTemporaryFile().name
         file.save(temp_path)
         df = pd.read_csv(temp_path,sep=';', engine='python')
-
+        print(df)
 #         df = df[(df['is_published'] == True)]
         data_dict = df.to_dict('records')
         collection = db[STORIES_DB]
